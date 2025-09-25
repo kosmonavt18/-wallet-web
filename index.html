@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wallet Web</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="auth" class="card">
+    <h1 id="authTitle" data-key="auth.title">Войти</h1>
+    <table style="width:100%;border-collapse:collapse">
+      <tr>
+        <td style="padding:8px;width:80px" data-key="auth.login">Логин:</td>
+        <td><input id="email" placeholder="Email" style="width:100%" /></td>
+      </tr>
+      <tr>
+        <td style="padding:8px" data-key="auth.password">Пароль:</td>
+        <td><input id="password" type="password" placeholder="Пароль" style="width:100%" /></td>
+      </tr>
+    </table>
+    <div id="authError" class="small" style="color:#c00"></div>
+    <button id="loginBtn" data-key="auth.loginBtn">Войти</button>
+    <button id="registerBtn" class="link" data-key="auth.register">Регистрация</button>
+    <button id="confirmRegisterBtn" class="hidden" data-key="auth.confirmRegister">Зарегистрироваться</button>
+    <button id="backToLogin" class="link hidden" data-key="auth.backToLogin">Назад к входу</button>
+  </div>
+
+  <div id="app" class="hidden">
+    <nav class="tabs">
+      <a href="#wallet" data-tab="wallet" class="active" data-key="nav.wallet">кошелек</a>
+      <a href="#cards" data-tab="cards" data-key="nav.cards">Карты</a>
+      <a href="#rates" data-tab="rates" data-key="nav.rates">Курс валют</a>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <select id="languageSelect" style="padding:4px 8px;border-radius:4px;border:1px solid #ddd;background:white;">
+          <option value="ru">🇷🇺 Русский</option>
+          <option value="en">🇺🇸 English</option>
+          <option value="ky">🇰🇬 Кыргызча</option>
+          <option value="tr">🇹🇷 Türkçe</option>
+        </select>
+        <button id="profileBtn" class="link" data-key="nav.profile">👤 Профиль</button>
+        <button id="logout" class="link" data-key="nav.logout">🚪 Выйти</button>
+      </div>
+    </nav>
+
+    <section id="wallet" class="tab active">
+      <h2 data-key="wallet.title">Кошелёк</h2>
+      <div id="walletList" class="wallet-list"></div>
+    </section>
+
+    <section id="cards" class="tab">
+      <div class="row between">
+        <h2 data-key="cards.title">Карты</h2>
+        <button id="addCard" class="fab">+</button>
+      </div>
+      <div id="cardsList" class="grid"></div>
+    </section>
+
+    <section id="rates" class="tab">
+      <h2 data-key="rates.title">Курс валют</h2>
+      <div id="ratesDate" class="small" style="text-align:center;margin-bottom:20px"></div>
+      <div id="ratesList" class="rates-grid"></div>
+      
+      <h3 style="margin-top:30px" data-key="rates.converter">Калькулятор конвертации</h3>
+      <div class="converter">
+        <div class="row" style="gap:12px;margin-bottom:12px">
+          <input id="convertFrom" type="number" placeholder="Сумма" style="flex:1" />
+          <select id="fromCurrency" style="width:100px">
+            <option value="KGS">KGS</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="RUB">RUB</option>
+            <option value="CNY">CNY</option>
+          </select>
+          <span style="font-size:20px">→</span>
+          <select id="toCurrency" style="width:100px">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="RUB">RUB</option>
+            <option value="KGS">KGS</option>
+            <option value="CNY">CNY</option>
+          </select>
+        </div>
+        <button id="convertBtn" style="width:100%" data-key="rates.convertBtn">Конвертировать</button>
+        <div id="convertResult" style="text-align:center;margin-top:12px;font-size:18px;font-weight:700;color:var(--primary)"></div>
+      </div>
+    </section>
+  </div>
+
+  <dialog id="newCardModal">
+    <form method="dialog" class="card">
+      <h3 data-key="card.add">Новая карта</h3>
+      <input id="ncName" placeholder="Название" required data-key="card.name" />
+      <select id="ncCategory">
+        <option value="e-wallet" data-key="category.e-wallet">электронные кошельки</option>
+        <option value="bonus" data-key="category.bonus">бонусные карты</option>
+        <option value="other" data-key="category.other">другое</option>
+      </select>
+            <div>
+              <label data-key="card.qr">QR код или штрих-код:</label>
+              <input type="file" id="ncCodeFile" accept="image/*" />
+              <button type="button" id="ncScanBtn" data-key="card.scanner">📷 Сканер</button>
+              <input id="ncData" placeholder="Или введите данные вручную" data-key="card.manual" />
+            </div>
+      <div>
+        <label data-key="card.background">Фон карты:</label>
+        <input type="file" id="ncBgFile" accept="image/*" />
+      </div>
+      <input id="ncBank" placeholder="Ссылка на приложение банка" data-key="card.bank" />
+      <menu>
+        <button value="cancel" data-key="card.cancel">Отмена</button>
+        <button id="ncSave" value="default" data-key="card.save">Сохранить</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <dialog id="editCardModal">
+    <form method="dialog" class="card">
+      <h3 data-key="card.edit">Редактировать карту</h3>
+      <input id="ecName" placeholder="Название" data-key="card.name" />
+      <select id="ecCategory">
+        <option value="e-wallet" data-key="category.e-wallet">электронные кошельки</option>
+        <option value="bonus" data-key="category.bonus">бонусные карты</option>
+        <option value="other" data-key="category.other">другое</option>
+      </select>
+      <input id="ecCardNumber" placeholder="Номер карты" data-key="card.number" />
+      <input id="ecExpiry" placeholder="Срок действия (ММ/ГГ)" data-key="card.expiry" />
+            <div>
+              <label data-key="card.qr">QR код или штрих-код:</label>
+              <input type="file" id="ecCodeFile" accept="image/*" />
+              <button type="button" id="ecScanBtn" data-key="card.scanner">📷 Сканер</button>
+              <input id="ecData" placeholder="Или введите данные вручную" data-key="card.manual" />
+            </div>
+      <div>
+        <label data-key="card.background">Фон карты:</label>
+        <input type="file" id="ecBgFile" accept="image/*" />
+      </div>
+      <input id="ecBank" placeholder="Ссылка на приложение банка" data-key="card.bank" />
+      <menu>
+        <button value="cancel" data-key="card.cancel">Отмена</button>
+        <button id="ecSave" value="default" data-key="card.save">Сохранить</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <dialog id="profileModal">
+    <form method="dialog" class="card">
+      <h3 data-key="profile.title">Профиль</h3>
+      <input id="profileLogin" placeholder="Логин" readonly data-key="profile.login" />
+      <input id="profilePassword" placeholder="Пароль" readonly data-key="profile.password" />
+      <input id="profileName" placeholder="Имя" data-key="profile.name" />
+      <input id="profileSurname" placeholder="Фамилия" data-key="profile.surname" />
+      <input id="profileAge" type="number" placeholder="Возраст" min="1" max="120" data-key="profile.age" />
+      <div style="margin: 16px 0; padding: 12px; background: #f5f5f5; border-radius: 8px;">
+        <h4 style="margin: 0 0 8px 0; font-size: 14px;" data-key="profile.backup">Резервное копирование</h4>
+        <button id="exportData" style="background: #4caf50; color: white; padding: 6px 12px; border: none; border-radius: 4px; margin-right: 8px; font-size: 12px;" data-key="profile.export">📥 Экспорт данных</button>
+        <button id="importData" style="background: #2196f3; color: white; padding: 6px 12px; border: none; border-radius: 4px; font-size: 12px;" data-key="profile.import">📤 Импорт данных</button>
+        <input type="file" id="importFile" accept=".json" style="display: none;" />
+      </div>
+      <menu>
+        <button value="cancel" data-key="card.cancel">Отмена</button>
+        <button id="profileSave" value="default" data-key="card.save">Сохранить</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
