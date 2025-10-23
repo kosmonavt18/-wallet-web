@@ -45,6 +45,7 @@ const translations = {
     'card.cancel': 'Отмена',
     'card.save': 'Сохранить',
     'card.editBtn': 'Изменить',
+    'card.deleteBtn': 'Удалить',
     'card.bankBtn': 'Открыть банк',
     'category.e-wallet': 'электронные кошельки',
     'category.bonus': 'бонусные карты',
@@ -64,6 +65,7 @@ const translations = {
     'success.export': 'Данные экспортированы! Сохраните файл в безопасном месте.',
     'success.import': 'Данные успешно импортированы!',
     'confirm.replaceData': 'Это заменит все текущие данные. Продолжить?',
+    'confirm.deleteCard': 'Вы уверены, что хотите удалить эту карту?',
     'error.importFile': 'Ошибка при импорте файла. Проверьте формат файла.'
   },
   en: {
@@ -108,6 +110,7 @@ const translations = {
     'card.cancel': 'Cancel',
     'card.save': 'Save',
     'card.editBtn': 'Edit',
+    'card.deleteBtn': 'Delete',
     'card.bankBtn': 'Open Bank',
     'category.e-wallet': 'e-wallets',
     'category.bonus': 'bonus cards',
@@ -127,6 +130,7 @@ const translations = {
     'success.export': 'Data exported! Save the file in a safe place.',
     'success.import': 'Data successfully imported!',
     'confirm.replaceData': 'This will replace all current data. Continue?',
+    'confirm.deleteCard': 'Are you sure you want to delete this card?',
     'error.importFile': 'Error importing file. Check file format.'
   },
   ky: {
@@ -171,6 +175,7 @@ const translations = {
     'card.cancel': 'Жокко чыгаруу',
     'card.save': 'Сактоо',
     'card.editBtn': 'Түзөтүү',
+    'card.deleteBtn': 'Өчүрүү',
     'card.bankBtn': 'Банкты ачуу',
     'category.e-wallet': 'электрондук капчыктар',
     'category.bonus': 'бонус карталары',
@@ -190,6 +195,7 @@ const translations = {
     'success.export': 'Маалымат экспорттолду! Файлды коопсуз жерде сактаңыз.',
     'success.import': 'Маалымат ийгиликтүү импорттолду!',
     'confirm.replaceData': 'Бул бардык учурдагы маалыматты алмаштырат. Улантуу керекби?',
+    'confirm.deleteCard': 'Бул картаны өчүрүүнү каалайсызбы?',
     'error.importFile': 'Файлды импорттоодо ката. Файл форматын текшериңиз.'
   },
   tr: {
@@ -234,6 +240,7 @@ const translations = {
     'card.cancel': 'İptal',
     'card.save': 'Kaydet',
     'card.editBtn': 'Düzenle',
+    'card.deleteBtn': 'Sil',
     'card.bankBtn': 'Bankayı Aç',
     'category.e-wallet': 'e-cüzdanlar',
     'category.bonus': 'bonus kartları',
@@ -253,6 +260,7 @@ const translations = {
     'success.export': 'Veri dışa aktarıldı! Dosyayı güvenli bir yerde saklayın.',
     'success.import': 'Veri başarıyla içe aktarıldı!',
     'confirm.replaceData': 'Bu tüm mevcut verileri değiştirecek. Devam edilsin mi?',
+    'confirm.deleteCard': 'Bu kartı silmek istediğinizden emin misiniz?',
     'error.importFile': 'Dosya içe aktarılırken hata. Dosya formatını kontrol edin.'
   }
 };
@@ -762,6 +770,17 @@ $('#ecSave').onclick = async (e)=>{
       bank: $('#ecBank').value 
     };
     save(LS_CARDS, list);
+    $('#editCardModal').close();
+    renderCards(); renderWallet();
+  }
+};
+
+$('#ecDelete').onclick = (e)=>{
+  e.preventDefault();
+  if(confirm(t('confirm.deleteCard'))){
+    const list = load(LS_CARDS, []);
+    const filtered = list.filter(x=>x.id!==editId);
+    save(LS_CARDS, filtered);
     $('#editCardModal').close();
     renderCards(); renderWallet();
   }
